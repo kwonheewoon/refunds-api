@@ -25,7 +25,7 @@ public class UserApiDto {
     private String password;
 
     /**/
-    private String reqNo;
+    private String regNo;
 
     public static UserApiDto UserApiDtoConvert(UserEntity userEntity){
         return UserApiDto.builder()
@@ -33,7 +33,7 @@ public class UserApiDto {
                 .password(userEntity.getPassword())
                 .userId(userEntity.getUserId())
                 .password(userEntity.getPassword())
-                .reqNo(userEntity.getRegNo())
+                .regNo(userEntity.getRegNo())
                 .build();
     }
 }

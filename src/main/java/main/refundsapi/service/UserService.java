@@ -23,7 +23,7 @@ public class UserService {
                 .name(userDto.getName())
                 .userId(userDto.getUserId())
                 .password(userDto.getPassword())
-                .regNo(userDto.getReqNo())
+                .regNo(userDto.getRegNo())
                 .build()
         ));
     }
