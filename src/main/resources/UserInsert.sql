@@ -1,0 +1,1 @@
+INSERT INTO user (user_id, password, name, reg_no) VALUES ('')

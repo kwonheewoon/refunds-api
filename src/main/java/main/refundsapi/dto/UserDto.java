@@ -1,0 +1,26 @@
+package main.refundsapi.dto;
+
+import lombok.*;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserDto {
+
+    /**/
+    private Long id;
+
+    /**/
+    private String name;
+
+    /**/
+    private String userId;
+
+    /**/
+    private String password;
+
+    /**/
+    private String reqNo;
+}

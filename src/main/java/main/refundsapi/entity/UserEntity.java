@@ -9,7 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "category")
+@Table(name = "user")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
