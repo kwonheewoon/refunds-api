@@ -36,3 +36,9 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+jwt:
+  header: Authorization
+  #kwonheewoon user api project
+  secret: a3dvbmhlZXdvb24gdXNlciBhcGkgcHJvamVjdCBzcmMubWFpbi5qYXZhLm1haW4ucmVmdW5kc2FwaSBwYWNrYWdl
+  token-validity-in-seconds: 86400
