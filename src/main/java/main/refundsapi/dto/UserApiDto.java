@@ -30,6 +30,7 @@ public class UserApiDto {
     public static UserApiDto UserApiDtoConvert(UserEntity userEntity){
         return UserApiDto.builder()
                 .id(userEntity.getId())
+                .name(userEntity.getName())
                 .password(userEntity.getPassword())
                 .userId(userEntity.getUserId())
                 .password(userEntity.getPassword())

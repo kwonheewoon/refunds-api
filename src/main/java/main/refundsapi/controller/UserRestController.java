@@ -11,12 +11,21 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/szs")
 @RequiredArgsConstructor
-public class UserController {
+public class UserRestController {
 
     private final UserService userService;
 
     @PostMapping("/signup")
     public ResponseEntity<Object> signup(@RequestBody UserDto userDto){
+        JSONObject results = new JSONObject();
+
+        results.put("data", userService.saveUser(userDto));
+
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody UserDto userDto){
         JSONObject results = new JSONObject();
 
         results.put("data", userService.saveUser(userDto));
