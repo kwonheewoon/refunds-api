@@ -5,8 +5,10 @@ import main.refundsapi.dto.TokenDto;
 import main.refundsapi.dto.UserDto;
 import main.refundsapi.jwt.JwtFilter;
 import main.refundsapi.jwt.TokenProvider;
+import main.refundsapi.service.UserInfoScrapService;
 import main.refundsapi.service.UserService;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +18,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/szs")
 @RequiredArgsConstructor
 public class UserRestController {
 
     private final UserService userService;
+
+    private final UserInfoScrapService userInfoScrapService;
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -48,7 +54,26 @@ public class UserRestController {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
         return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Object> me(){
+
+        return new ResponseEntity<>(userService.findByUserId(), HttpStatus.OK);
+    }
+
+    @PostMapping("/scrap")
+    public ResponseEntity<Object> scrap() throws ParseException {
+
+        return new ResponseEntity<>(userInfoScrapService.findScrap(), HttpStatus.OK);
+    }
+
+    @GetMapping("/refund")
+    public ResponseEntity<Object> refund() throws ParseException {
+
+        return new ResponseEntity<>(userInfoScrapService.findScrap(), HttpStatus.OK);
     }
 
 }

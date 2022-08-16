@@ -1,6 +1,5 @@
 package main.refundsapi.component;
 
-import lombok.RequiredArgsConstructor;
 import main.refundsapi.entity.UserJoinAccessEntity;
 import main.refundsapi.repository.UserJoinAccessRepository;
 import org.springframework.beans.factory.annotation.Autowired;

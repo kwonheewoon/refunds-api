@@ -33,6 +33,7 @@ dependencies {
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     /*implementation 'io.jsonwebtoken:jjwt:0.9.1'*/
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
@@ -43,6 +44,9 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
 }
 

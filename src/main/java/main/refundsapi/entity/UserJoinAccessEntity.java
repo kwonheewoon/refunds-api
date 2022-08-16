@@ -2,6 +2,7 @@ package main.refundsapi.entity;
 
 
 import lombok.*;
+import main.refundsapi.converter.CryptoConverter;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -28,6 +29,8 @@ public class UserJoinAccessEntity extends BaseEntity{
     @Comment("사용자 이름")
     private String name;
 
+    //주민등록번호 등록,조회시 SEED_CBC 자동 암복호화
+    @Convert(converter = CryptoConverter.class)
     @Column(name = "reg_no", columnDefinition = "char", length = 14, nullable = false)
     @Comment("사용자 주민등록 번호")
     private String regNo;
