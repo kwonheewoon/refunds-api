@@ -1,0 +1,54 @@
+package main.refundsapi.repository;
+
+import com.querydsl.core.dml.UpdateClause;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAUpdateClause;
+import lombok.RequiredArgsConstructor;
+import main.refundsapi.dto.UserTaxInfoDto;
+import main.refundsapi.dto.UserTaxResultApiDto;
+import main.refundsapi.entity.QUserEntity;
+import main.refundsapi.entity.QUserTaxInfoEntity;
+import main.refundsapi.entity.QUserTaxResultEntity;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+@Repository
+@RequiredArgsConstructor
+public class UserTaxInfoQueryRepository {
+
+    private final JPAQueryFactory queryFactory;
+
+    /**
+     * Category 수정
+     * */
+    public Long updateUserTaxInfo(UserTaxInfoDto userTaxInfoDto) {
+        var userTaxInfoEntity = QUserTaxInfoEntity.userTaxInfoEntity;
+
+        UpdateClause<JPAUpdateClause> updateBuilder = this.queryFactory.update(userTaxInfoEntity);
+
+        //카테고리 명 수정
+        if (null != userTaxInfoDto.getTotalPayment() && userTaxInfoDto.getTotalPayment().intValue() > 0) {
+            updateBuilder.set(userTaxInfoEntity.totalPayment, userTaxInfoDto.getTotalPayment());
+        }
+        //부모 카테고리 수정
+        if (null != userTaxInfoDto.getTotalAmountUsed() && userTaxInfoDto.getTotalAmountUsed().intValue() > 0) {
+            updateBuilder.set(userTaxInfoEntity.totalAmountUsed, userTaxInfoDto.getTotalAmountUsed());
+        }
+        //부모 카테고리 수정
+        if (!userTaxInfoDto.getIncomeCls().isEmpty()) {
+            updateBuilder.set(userTaxInfoEntity.incomeCls, userTaxInfoDto.getIncomeCls());
+        }
+
+
+
+        return updateBuilder
+                .set(userTaxInfoEntity.lastModifiedDate, LocalDateTime.now())
+                .where(userTaxInfoEntity.id.eq(userTaxInfoDto.getId()))
+                .execute();
+    }
+
+
+}

@@ -1,15 +1,19 @@
 package main.refundsapi.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.Column;
 import java.math.BigDecimal;
 
-@Getter
 @Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserTaxResultApiDto {
+
+    private Long id;
 
     private String name;
 

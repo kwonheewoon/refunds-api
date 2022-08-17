@@ -20,7 +20,7 @@ public class ExceptionControllerAdvice {
             CommonException.class
     })
     public ResponseEntity<ErrorResponse> BadRequestException(final CommonException ex) {
-        log.error("CategoryException: {}", ex.getErrorCode());
+        log.error("CommonException: {}", ex.getErrorCode());
 
         return ResponseEntity
                 .status(ex.getErrorCode().getStatus().value())

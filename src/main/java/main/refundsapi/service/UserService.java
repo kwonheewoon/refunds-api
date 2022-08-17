@@ -80,13 +80,18 @@ public class UserService {
 
     }
 
-
-    public UserApiDto findByUserId(){
+    public UserApiDto findUser(){
         return UserApiDto.UserApiDtoConvert(
                 SecurityUtil.getCurrentUserId()
                 .flatMap(userRepository::findByUserId)
                 .orElseThrow(() -> new CommonException(ErrorCode.USER_NOT_FOUND)
                 )
+        );
+    }
+
+    public UserApiDto findByUserId(UserDto userDto){
+        return UserApiDto.UserApiDtoConvert(
+                userRepository.findByUserId(userDto.getUserId()).orElseThrow(() -> new CommonException(ErrorCode.USER_NOT_FOUND))
         );
     }
 

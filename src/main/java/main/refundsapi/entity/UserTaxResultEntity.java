@@ -2,6 +2,7 @@ package main.refundsapi.entity;
 
 
 import lombok.*;
+import main.refundsapi.dto.UserTaxResultDto;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -52,5 +53,13 @@ public class UserTaxResultEntity extends BaseEntity{
     private BigDecimal refundAmount;
 
 
+    public static UserTaxResultEntity entityConvert(UserTaxResultDto userTaxResultDto){
+        return UserTaxResultEntity.builder()
+                .year(userTaxResultDto.getYear())
+                .limitAmount(userTaxResultDto.getLimitAmount())
+                .deductible(userTaxResultDto.getDeductible())
+                .refundAmount(userTaxResultDto.getRefundAmount())
+                .build();
+    }
 
 }

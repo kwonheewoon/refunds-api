@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 @Getter
 @AllArgsConstructor
-public enum TaxInfoEnum {
+public enum TaxInfoCodeEnum {
 
     /*
      * 소득구분 산출세액 코드 : CAL

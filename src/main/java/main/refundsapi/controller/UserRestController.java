@@ -6,6 +6,7 @@ import main.refundsapi.dto.UserDto;
 import main.refundsapi.jwt.JwtFilter;
 import main.refundsapi.jwt.TokenProvider;
 import main.refundsapi.service.UserInfoScrapService;
+import main.refundsapi.service.UserRefundService;
 import main.refundsapi.service.UserService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -29,7 +30,10 @@ public class UserRestController {
 
     private final UserInfoScrapService userInfoScrapService;
 
+    private final UserRefundService userRefundService;
+
     private final TokenProvider tokenProvider;
+
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @PostMapping("/signup")
@@ -43,8 +47,12 @@ public class UserRestController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody UserDto userDto){
+        
+        //유저 정보 조회
+        var findUserApiDto = userService.findByUserId(userDto);
+
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDto.getUserId(), userDto.getPassword());
+                new UsernamePasswordAuthenticationToken(findUserApiDto.getUserId(), userDto.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
@@ -61,7 +69,7 @@ public class UserRestController {
     @GetMapping("/me")
     public ResponseEntity<Object> me(){
 
-        return new ResponseEntity<>(userService.findByUserId(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.findUser(), HttpStatus.OK);
     }
 
     @PostMapping("/scrap")
@@ -73,7 +81,7 @@ public class UserRestController {
     @GetMapping("/refund")
     public ResponseEntity<Object> refund() throws ParseException {
 
-        return new ResponseEntity<>(userInfoScrapService.findScrap(), HttpStatus.OK);
+        return new ResponseEntity<>(userRefundService.refund(), HttpStatus.OK);
     }
 
 }

@@ -89,13 +89,14 @@ public class UserRefundServiceTest {
     @Test
     void 환급액_계산식(){
 
-        BigDecimal deductible = new BigDecimal("684000.0");
-        BigDecimal refundAmountResult = new BigDecimal("925000.0");
+        BigDecimal deductible = new BigDecimal("925000.1");
+        BigDecimal limitAmount = new BigDecimal("925000.5");
 
 
-        log.info("환급액 : {}", Math.min(deductible.intValue(), refundAmountResult.intValue()));
+        //log.info("환급액 : {}", Math.min(deductible.intValue(), refundAmountResult.intValue()));
+        log.info("환급액 : {}", deductible.min(limitAmount));
 
-        Assertions.assertThat(deductible.intValue()).isEqualTo(new BigDecimal("684000.0").intValue());
+        Assertions.assertThat(deductible.min(limitAmount)).isEqualTo(new BigDecimal("925000.1"));
     }
 }
 

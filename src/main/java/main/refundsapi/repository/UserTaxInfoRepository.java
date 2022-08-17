@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface UserTaxInfoRepository extends JpaRepository<UserTaxInfoEntity, Long> {
 
     Optional<UserTaxInfoEntity> findByUserEntityAndYear(UserEntity userEntity, int year);
+
+    Long countByUserEntityAndYear(UserEntity userEntity, int year);
 }

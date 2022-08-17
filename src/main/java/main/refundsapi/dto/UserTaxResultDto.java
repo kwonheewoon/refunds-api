@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Builder
 public class UserTaxResultDto {
 
-    private String name;
+    private int year;
 
     private BigDecimal limitAmount;
 

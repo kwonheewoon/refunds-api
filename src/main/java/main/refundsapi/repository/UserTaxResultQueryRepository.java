@@ -25,6 +25,7 @@ public class UserTaxResultQueryRepository {
         return Optional.ofNullable(this.queryFactory
                 .select(Projections.fields(
                         UserTaxResultApiDto.class,
+                        userTaxResultEntity.id.as("id"),
                         userTaxResultEntity.limitAmount.as("limitAmount"),
                         userTaxResultEntity.deductible.as("deductible"),
                         userTaxResultEntity.refundAmount.as("refundAmount"),
@@ -39,4 +40,5 @@ public class UserTaxResultQueryRepository {
                 )
                 .fetchOne());
     }
+
 }
