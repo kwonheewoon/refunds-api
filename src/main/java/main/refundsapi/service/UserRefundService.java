@@ -29,8 +29,6 @@ import java.util.Optional;
 @Service
 public class UserRefundService {
 
-    private final WebClient webClient;
-
     private final UserRepository userRepository;
 
     private final UserTaxInfoRepository userTaxInfoRepository;
@@ -39,23 +37,29 @@ public class UserRefundService {
 
     private final UserTaxResultQueryRepository userTaxResultQueryRepository;
 
+    /**
+     * 회원 세무정보에 대한 환급액 계산결과 저장
+     * */
     @Transactional
     public JSONObject refund() throws ParseException {
 
+        //회원 환급액 계산 결과에 대해 저장, 수정을 위한 dto 생성
         UserTaxResultDto userTaxResultDto = UserTaxResultDto.builder().year(CommonUtil.getYear()).build();
 
+        //회원 조회
         var findUserEntity = SecurityUtil.getCurrentUserId()
                 .flatMap(userRepository::findByUserId)
                 .orElseThrow(() -> new CommonException(ErrorCode.USER_NOT_FOUND)
                 );
 
+        //회원 세무정보 조회
         var findUserTaxInfoEntity = userTaxInfoRepository.findByUserEntityAndYear(findUserEntity, CommonUtil.getYear()).orElseThrow(() -> new CommonException(ErrorCode.USER_TAX_INFO_NOT_FOUND));
 
-        //총급여액
+        //한도액 계산
         BigDecimal totalPayment = findUserTaxInfoEntity.getTotalPayment();
         userTaxResultDto.setLimitAmount(limitAmountCalc(totalPayment).orElseThrow(() -> new CommonException(ErrorCode.LIMIT_AMOUNT_CALC_FAIL)));
 
-        //총사용금액
+        //공제액 계산
         BigDecimal totalAmountUsed = findUserTaxInfoEntity.getTotalAmountUsed();
         userTaxResultDto.setDeductible(deductibleCalc(totalAmountUsed, findUserTaxInfoEntity.getIncomeCls()).orElseThrow(() -> new CommonException(ErrorCode.DEDUCTIBLE_CALC_FAIL)));
 
@@ -66,20 +70,18 @@ public class UserRefundService {
         var findUserTaxResultDto = userTaxResultQueryRepository.findRefund(findUserEntity.getUserId(), CommonUtil.getYear());
 
         if(findUserTaxResultDto.isPresent()){
-            //환급액 수정
-            userTaxResultRepository.save(
-                    UserTaxResultEntity.builder()
+            //환급계산 결과 수정
+            userTaxResultQueryRepository.updateUserTaxResult(
+                    UserTaxResultDto.builder()
                             .id(findUserTaxResultDto.get().getId())
-                            .year(userTaxResultDto.getYear())
+                            .year(CommonUtil.getYear())
                             .limitAmount(userTaxResultDto.getLimitAmount())
                             .deductible(userTaxResultDto.getDeductible())
                             .refundAmount(userTaxResultDto.getRefundAmount())
-                            .userEntity(findUserEntity)
-                            .userTaxInfoEntity(findUserTaxInfoEntity)
                             .build()
             );
         }else{
-            //환급액 저장
+            //환급계산 결과 저장
             userTaxResultRepository.save(
                     UserTaxResultEntity.builder()
                             .year(userTaxResultDto.getYear())
@@ -92,13 +94,16 @@ public class UserRefundService {
             );
         }
 
-        //환급액 조회
+        //환급계산 결과 조회
         var findRefundEntity = userTaxResultQueryRepository.findRefund(findUserEntity.getUserId(), CommonUtil.getYear()).orElseThrow(() -> new CommonException(ErrorCode.USER_TAX_RESULT_NOT_FOUND));
         
-        //조회된 환급액 정보 기준으로 json 객체 데이터 반환
+        //조회된 환급계산 결과 정보 기준으로 json 객체 데이터 반환
         return setRefundJson(findRefundEntity);
     }
 
+    /**
+     * 한도액 계산
+     * */
     public Optional<BigDecimal> limitAmountCalc(BigDecimal totalPayment){
 
         //근로소득 세액공제 한도 계산
@@ -137,6 +142,9 @@ public class UserRefundService {
         return Optional.empty();
     }
 
+    /**
+     * 공제액 계산
+     * */
     public Optional<BigDecimal> deductibleCalc(BigDecimal totalAmountUsed, String incomeCls){
 
         //산출세액이 1,300,000만원 보다 작을경우
@@ -153,22 +161,29 @@ public class UserRefundService {
         return Optional.empty();
     }
 
+    /**
+     * 환급액 계산
+     * */
     public Optional<BigDecimal> refundAmountCalc(BigDecimal deductible, BigDecimal limitAmount){
 
-        if(null != deductible && null != limitAmount){
+        //공제액, 한도액의 값이 있을시
+        if((null != deductible && 0 < deductible.intValue()) && (null != limitAmount && 0 < limitAmount.intValue())){
             return Optional.of(deductible.min(limitAmount));
         }
 
         return Optional.empty();
     }
 
+    /**
+     * 회원 세무정보에 대한 환급 계산 결과 JSONObject 세팅
+     * */
     public JSONObject setRefundJson(UserTaxResultApiDto userTaxResultApiDto){
         JSONObject result = new JSONObject();
 
         result.put("이름", userTaxResultApiDto.getName());
-        result.put("한도", userTaxResultApiDto.getLimitAmount());
-        result.put("공제액", userTaxResultApiDto.getDeductible());
-        result.put("환급액", userTaxResultApiDto.getRefundAmount());
+        result.put("한도", CommonUtil.amountFormat(userTaxResultApiDto.getLimitAmount()));
+        result.put("공제액", CommonUtil.amountFormat(userTaxResultApiDto.getDeductible()));
+        result.put("환급액", CommonUtil.amountFormat(userTaxResultApiDto.getRefundAmount()));
 
         return result;
     }

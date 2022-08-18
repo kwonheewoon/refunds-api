@@ -9,9 +9,12 @@ public enum CommonEnum {
 
 
     /*
-     *  : 로그인 정보가 잘못 되었습니다.
+     *  회원 세무정보 scrap url
      */
-    SCRAP_URL("SCRAP_URL", "https://codetest.3o3.co.kr/v1/scrap");
+    SCRAP_URL("SCRAP_URL", "https://codetest.3o3.co.kr/v1/scrap"),
+    STATUS_SUCESS("sucess", "성공"),
+    STATUS_FAIL("fail", "실패"),
+    ;
 
 
     private final String name;

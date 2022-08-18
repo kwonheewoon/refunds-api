@@ -19,6 +19,11 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.OK, "회원 정보를 찾을 수 없습니다."),
 
     /*
+     * 401 UNAUTHORIZED: 허용되지 않은 Request Method 호출
+     */
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
+
+    /*
      * 405 METHOD_NOT_ALLOWED: 허용되지 않은 Request Method 호출
      */
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "허용되지 않은 메서드입니다."),

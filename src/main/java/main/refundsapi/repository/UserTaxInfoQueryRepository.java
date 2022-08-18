@@ -22,22 +22,22 @@ public class UserTaxInfoQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     /**
-     * Category 수정
+     * 회원 세무정보 수정
      * */
     public Long updateUserTaxInfo(UserTaxInfoDto userTaxInfoDto) {
         var userTaxInfoEntity = QUserTaxInfoEntity.userTaxInfoEntity;
 
         UpdateClause<JPAUpdateClause> updateBuilder = this.queryFactory.update(userTaxInfoEntity);
 
-        //카테고리 명 수정
+        //총 지급액 수정
         if (null != userTaxInfoDto.getTotalPayment() && userTaxInfoDto.getTotalPayment().intValue() > 0) {
             updateBuilder.set(userTaxInfoEntity.totalPayment, userTaxInfoDto.getTotalPayment());
         }
-        //부모 카테고리 수정
+        //총 사용 금액 수정
         if (null != userTaxInfoDto.getTotalAmountUsed() && userTaxInfoDto.getTotalAmountUsed().intValue() > 0) {
             updateBuilder.set(userTaxInfoEntity.totalAmountUsed, userTaxInfoDto.getTotalAmountUsed());
         }
-        //부모 카테고리 수정
+        //소득구분 수정
         if (!userTaxInfoDto.getIncomeCls().isEmpty()) {
             updateBuilder.set(userTaxInfoEntity.incomeCls, userTaxInfoDto.getIncomeCls());
         }
@@ -46,7 +46,8 @@ public class UserTaxInfoQueryRepository {
 
         return updateBuilder
                 .set(userTaxInfoEntity.lastModifiedDate, LocalDateTime.now())
-                .where(userTaxInfoEntity.id.eq(userTaxInfoDto.getId()))
+                .where(userTaxInfoEntity.id.eq(userTaxInfoDto.getId())
+                        .and(userTaxInfoEntity.year.eq(userTaxInfoDto.getYear())))
                 .execute();
     }
 

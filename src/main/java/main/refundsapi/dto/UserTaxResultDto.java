@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 @Builder
 public class UserTaxResultDto {
 
+    private Long id;
+
     private int year;
 
     private BigDecimal limitAmount;

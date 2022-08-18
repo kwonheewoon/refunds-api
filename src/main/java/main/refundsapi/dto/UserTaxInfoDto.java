@@ -13,6 +13,8 @@ public class UserTaxInfoDto {
 
     private Long id;
 
+    private int year;
+
     private BigDecimal totalPayment;
 
 

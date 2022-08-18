@@ -47,9 +47,9 @@ public enum RefundCalcEnum {
     /* calculated tax
      * 공제요건 액: 1,300,000 원
      */
-    CALCULATED_TAX_130(new BigDecimal(1300000), "세액공제 130만원"),
+    CALCULATED_TAX_130(new BigDecimal(1300000), "세액공제 1,300,000원"),
 
-    CALCULATED_TAX_71_5(new BigDecimal(715000), "세액공제 71,5000원");
+    CALCULATED_TAX_71_5(new BigDecimal(715000), "세액공제 715,000원");
 
 
 

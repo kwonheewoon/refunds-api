@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import main.refundsapi.entity.UserEntity;
+import main.refundsapi.util.SeedUtil;
 
 @Getter
 @Builder
@@ -22,18 +23,13 @@ public class UserApiDto {
     private String userId;
 
     /**/
-    private String password;
-
-    /**/
     private String regNo;
 
     public static UserApiDto UserApiDtoConvert(UserEntity userEntity){
         return UserApiDto.builder()
                 .id(userEntity.getId())
                 .name(userEntity.getName())
-                .password(userEntity.getPassword())
                 .userId(userEntity.getUserId())
-                .password(userEntity.getPassword())
                 .regNo(userEntity.getRegNo())
                 .build();
     }
