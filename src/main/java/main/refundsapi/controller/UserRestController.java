@@ -9,7 +9,7 @@ import main.refundsapi.dto.UserDto;
 import main.refundsapi.jwt.JwtFilter;
 import main.refundsapi.jwt.TokenProvider;
 import main.refundsapi.response.SucessResponse;
-import main.refundsapi.service.UserInfoScrapService;
+import main.refundsapi.service.UserTaxInfoService;
 import main.refundsapi.service.UserRefundService;
 import main.refundsapi.service.UserService;
 import org.json.simple.parser.ParseException;
@@ -29,7 +29,7 @@ public class UserRestController {
 
     private final UserService userService;
 
-    private final UserInfoScrapService userInfoScrapService;
+    private final UserTaxInfoService userTaxInfoService;
 
     private final UserRefundService userRefundService;
 
@@ -60,23 +60,23 @@ public class UserRestController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        return new ResponseEntity<>(new SucessResponse(CommonEnum.STATUS_SUCESS.getName(), UserEnum.USER_LOGIN_SUCESS, new TokenDto(jwt)), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(new SucessResponse(CommonEnum.STATUS_SUCCESS.getName(), UserEnum.USER_LOGIN_SUCESS, new TokenDto(jwt)), httpHeaders, HttpStatus.OK);
     }
 
     @GetMapping("/me")
     public ResponseEntity<Object> me(){
-        return new ResponseEntity<>(new SucessResponse(CommonEnum.STATUS_SUCESS.getName(), UserEnum.USER_FIND_SUCESS, userService.findUser()), HttpStatus.OK);
+        return new ResponseEntity<>(new SucessResponse(CommonEnum.STATUS_SUCCESS.getName(), UserEnum.USER_FIND_SUCESS, userService.findUser()), HttpStatus.OK);
     }
 
     @PostMapping("/scrap")
     public ResponseEntity<Object> scrap() throws ParseException {
-        return new ResponseEntity<>(new SucessResponse(CommonEnum.STATUS_SUCESS.getName(), UserTaxEnum.USER_FIND_SCRAP_SUCESS, userInfoScrapService.findScrap()), HttpStatus.OK);
+        return new ResponseEntity<>(userTaxInfoService.findScrap(), HttpStatus.OK);
     }
 
     @GetMapping("/refund")
     public ResponseEntity<Object> refund() throws ParseException {
 
-        return new ResponseEntity<>(new SucessResponse(CommonEnum.STATUS_SUCESS.getName(), UserTaxEnum.USER_REFUND_CALC_SUCESS, userRefundService.refund()), HttpStatus.OK);
+        return new ResponseEntity<>(new SucessResponse(CommonEnum.STATUS_SUCCESS.getName(), UserTaxEnum.USER_REFUND_CALC_SUCESS, userRefundService.refund()), HttpStatus.OK);
     }
 
 }

@@ -22,7 +22,7 @@ public class UserTaxInfoQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     /**
-     * 회원 세무정보 수정
+     * 유저 세무정보 수정
      * */
     public Long updateUserTaxInfo(UserTaxInfoDto userTaxInfoDto) {
         var userTaxInfoEntity = QUserTaxInfoEntity.userTaxInfoEntity;

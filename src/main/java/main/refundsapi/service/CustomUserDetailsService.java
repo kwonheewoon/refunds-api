@@ -26,11 +26,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         var result = userRepository.findByUserId(userId);
 
         return userRepository.findByUserId(userId)
-                .map(user -> createUser(userId, user))
+                .map(this::createUser)
                 .orElseThrow(() -> new CommonException(ErrorCode.USER_NOT_FOUND));
     }
 
-    private User createUser(String username, UserEntity userEntity) {
+    private User createUser(UserEntity userEntity) {
         if (null == userEntity) {
             throw new CommonException(ErrorCode.USER_NOT_FOUND);
         }

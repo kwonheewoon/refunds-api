@@ -42,3 +42,7 @@ jwt:
   #kwonheewoon user api project
   secret: a3dvbmhlZXdvb24gdXNlciBhcGkgcHJvamVjdCBzcmMubWFpbi5qYXZhLm1haW4ucmVmdW5kc2FwaSBwYWNrYWdl
   token-validity-in-seconds: 86400
+
+seed-util:
+  user-key: testCrypt2020!@#
+  iv: 1234567890123456

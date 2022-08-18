@@ -17,9 +17,6 @@ import main.refundsapi.repository.UserRepository;
 import main.refundsapi.response.ErrorResponse;
 import main.refundsapi.response.SucessResponse;
 import main.refundsapi.util.SecurityUtil;
-import main.refundsapi.util.SeedUtil;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,18 +37,18 @@ public class UserService<T> {
     private final UserJoinAccessRepository userJoinAccessRepository;
 
     /**
-     * 회원 정보 저장
+     * 유저 정보 저장
      * */
     @Transactional
     public T saveUser(UserDto userDto){
 
-        //회원 가입 제한자 여부 조회
+        //유저 가입 제한자 여부 조회
         var findUserEntity = userJoinAccessRepository.findByNameAndRegNo(userDto.getName(),userDto.getRegNo());
 
-        //회원가입 가능자 여부 && 중복회원 가입 여부 필터링
+        //유저가입 가능자 여부 && 중복유저 가입 여부 필터링
         if(findUserEntity.isPresent() && duplicationUser(userDto)){
 
-            //회원 정보 저장후 리턴된 회원 정보 저장
+            //유저 정보 저장후 리턴된 유저 정보 저장
             var saveUserEntity = userRepository.save(
                     UserEntity.builder()
                             .name(userDto.getName())
@@ -61,13 +58,13 @@ public class UserService<T> {
                             .build()
             );
 
-            //회원가입 정상적 완료
+            //유저가입 정상적 완료
             if(null != saveUserEntity){
-                return (T) new SucessResponse(CommonEnum.STATUS_SUCESS.getName(), UserEnum.USER_SAVE_SUCESS, UserApiDto.UserApiDtoConvert(
+                return (T) new SucessResponse(CommonEnum.STATUS_SUCCESS.getName(), UserEnum.USER_SAVE_SUCESS, UserApiDto.UserApiDtoConvert(
                                 saveUserEntity
                         ));
             }
-            //회원가입 실패
+            //유저가입 실패
             else{
                 return (T) new ErrorResponse(CommonEnum.STATUS_FAIL.getName(), UserEnum.USER_SAVE_FAIL);
             }
@@ -97,7 +94,7 @@ public class UserService<T> {
     }
 
     /**
-     * SecurityContextHolder에서 저장된 userId로 회원 정보 조회
+     * SecurityContextHolder에서 저장된 userId로 유저 정보 조회
      * */
     @Transactional
     public UserApiDto findUser(){
@@ -110,7 +107,7 @@ public class UserService<T> {
     }
 
     /**
-     * 회원 아이디를 기준으로 회원 정보 조회
+     * 유저 아이디를 기준으로 유저 정보 조회
      * */
     @Transactional
     public UserApiDto findByUserId(UserDto userDto){
@@ -120,7 +117,7 @@ public class UserService<T> {
     }
 
     /**
-    * 회원 중복 체크를 위한 회원 정보 조회
+    * 유저 중복 체크를 위한 유저 정보 조회
     * */
     @Transactional
     public boolean duplicationUser(UserDto userDto){

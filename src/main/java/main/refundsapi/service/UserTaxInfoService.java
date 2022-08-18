@@ -26,14 +26,14 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class UserInfoScrapService {
-
-    private final WebClient webClient;
+public class UserTaxInfoService {
 
     private final TaxInfoScrapWebClientService taxInfoScrapWebClientService;
 
@@ -44,14 +44,15 @@ public class UserInfoScrapService {
     private final UserTaxInfoQueryRepository userTaxInfoQueryRepository;
 
     /**
-     * 회원 세무정보 scrap
+     * 유저 세무정보 scrap
      * */
     @Transactional
     public JSONObject findScrap() throws ParseException {
-        JSONParser jsonParser = new JSONParser();
-        List<JSONArray> scrapJsonList = new ArrayList<>();
 
-        //SecurityContextHolder에서 저장된 userId로 회원 정보 조회
+        //JSON 데이터 저장용 Map 정의
+        Map<String, JSONArray> scrapJsonMap = new HashMap<>();
+
+        //SecurityContextHolder에서 저장된 userId로 유저 정보 조회
         var findUserEntity = SecurityUtil.getCurrentUserId()
                 .flatMap(userRepository::findByUserId)
                 .orElseThrow(() -> new CommonException(ErrorCode.USER_NOT_FOUND)
@@ -72,54 +73,54 @@ public class UserInfoScrapService {
         JSONObject jsonList = (JSONObject)data.get("jsonList");
 
         //scrap001 항목 조회
-        //scrap001 add
-        scrapJsonList.add((JSONArray)jsonList.get("scrap001"));
+        //scrap001 put
+        scrapJsonMap.put("scrap001", (JSONArray) jsonList.get("scrap001"));
 
         //scrap002 항목 조회
-        //scrap002 add
-        scrapJsonList.add((JSONArray)jsonList.get("scrap002"));
+        //scrap002 put
+        scrapJsonMap.put("scrap002", (JSONArray) jsonList.get("scrap002"));
         
-        //회원 세무정보 저장
-        userTaxInfoSave(scrapJsonList, findUserEntity);
+        //유저 세무정보 저장
+        userTaxInfoSave(scrapJsonMap, findUserEntity);
 
 
         return parseResult;
     }
 
     /**
-     * 회원 세무정보 저장
+     * 유저 세무정보 저장
      * */
     @Transactional
-    public UserTaxInfoEntity userTaxInfoSave(List<JSONArray> scrapJsonList, UserEntity findUserEntity){
+    public UserTaxInfoEntity userTaxInfoSave(Map<String, JSONArray> scrapJsonMap, UserEntity findUserEntity){
         
-        //회원 세무정보 조회
+        //유저 세무정보 조회
         var findUserTaxInfoEntity = userTaxInfoRepository.findByUserEntityAndYear(findUserEntity, CommonUtil.getYear());
         
         //세무정보가 존재하면
         if(findUserTaxInfoEntity.isPresent()){
 
-            //회원 세무정보 수정
+            //유저 세무정보 수정
             userTaxInfoQueryRepository.updateUserTaxInfo(
                     UserTaxInfoDto.builder()
                             .id(findUserTaxInfoEntity.get().getId())
                             .year(CommonUtil.getYear())
-                            .totalPayment(new BigDecimal(((JSONObject)scrapJsonList.get(0).get(0)).get("총지급액").toString().replaceAll("\\.", ",").replaceAll(",", "")))
-                            .totalAmountUsed(new BigDecimal(((JSONObject)scrapJsonList.get(1).get(0)).get("총사용금액").toString().replaceAll(",", "")))
-                            .incomeCls(TaxInfoCodeEnum.searchCode((String) ((JSONObject)scrapJsonList.get(1).get(0)).get("소득구분")))
+                            .totalPayment(new BigDecimal(((JSONObject)scrapJsonMap.get("scrap001").get(0)).get("총지급액").toString().replaceAll("\\.", ",").replaceAll(",", "")))
+                            .totalAmountUsed(new BigDecimal(((JSONObject)scrapJsonMap.get("scrap002").get(0)).get("총사용금액").toString().replaceAll(",", "")))
+                            .incomeCls(TaxInfoCodeEnum.searchCode((String) ((JSONObject)scrapJsonMap.get("scrap002").get(0)).get("소득구분")))
                             .build()
             );
 
             return userTaxInfoRepository.findByUserEntityAndYear(findUserEntity, CommonUtil.getYear()).orElseThrow(() -> new CommonException(ErrorCode.USER_TAX_INFO_NOT_FOUND));
         }
         
-        //회원 세무정보 저장
+        //유저 세무정보 저장
         return userTaxInfoRepository.save(
                 UserTaxInfoEntity.builder()
                 .userEntity(findUserEntity)
                 .year(CommonUtil.getYear())
-                .totalPayment(new BigDecimal(((JSONObject)scrapJsonList.get(0).get(0)).get("총지급액").toString().replaceAll("\\.", ",").replaceAll(",", "")))
-                .totalAmountUsed(new BigDecimal(((JSONObject)scrapJsonList.get(1).get(0)).get("총사용금액").toString().replaceAll(",", "")))
-                .incomeCls(TaxInfoCodeEnum.searchCode((String) ((JSONObject)scrapJsonList.get(1).get(0)).get("소득구분")))
+                .totalPayment(new BigDecimal(((JSONObject)scrapJsonMap.get("scrap001").get(0)).get("총지급액").toString().replaceAll("\\.", ",").replaceAll(",", "")))
+                .totalAmountUsed(new BigDecimal(((JSONObject)scrapJsonMap.get("scrap002").get(0)).get("총사용금액").toString().replaceAll(",", "")))
+                .incomeCls(TaxInfoCodeEnum.searchCode((String) ((JSONObject)scrapJsonMap.get("scrap002").get(0)).get("소득구분")))
                 .build()
         );
 

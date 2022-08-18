@@ -49,7 +49,7 @@ public class UserTaxResultQueryRepository {
 
 
     /**
-     * 회원 환급액 계산 결과 데이터 수정
+     * 유저 환급액 계산 결과 데이터 수정
      * */
     public Long updateUserTaxResult(UserTaxResultDto userTaxResultDto) {
         var userTaxResultEntity = QUserTaxResultEntity.userTaxResultEntity;

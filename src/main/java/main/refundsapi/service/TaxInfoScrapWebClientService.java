@@ -38,13 +38,13 @@ public class TaxInfoScrapWebClientService {
     private final UserRepository userRepository;
 
     /**
-     * 회원 세무정보 scrap
+     * 유저 세무정보 scrap
      * */
     @Transactional
     public JSONObject findScrap(String name, String regNo) throws ParseException {
         JSONParser jsonParser = new JSONParser();
 
-        //조죄한 회원 정보 토대로 scrap uri에서 세무정보 요청
+        //조죄한 유저 정보 토대로 scrap uri에서 세무정보 요청
         String scrapResult = webClient.post()
                 .uri(CommonEnum.SCRAP_URL.getText())
                 .body(Mono.just(UserDto.builder().name(name).regNo(regNo).build()), UserDto.class)

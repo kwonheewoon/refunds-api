@@ -40,6 +40,17 @@ public enum RefundCalcEnum {
      */
     TOTAL_PAYMENT_DEDUCTION_50(new BigDecimal(500000), "한도 공제요건 액 50만원"),
 
+    /*
+     * 한도 계산 소수 0.008
+     */
+    CALC_DECIMAL_0_008(new BigDecimal("0.008"), "한도 계산 소수 0.008"),
+
+    /*
+     * 한도 계산 소수 0.5
+     */
+    CALC_DECIMAL_0_5(new BigDecimal("0.5"), "한도 계산 소수 0.5"),
+
+
 
     /****************************
      근로소득 세액공제 계산 Bigdecimal 변수
@@ -49,7 +60,17 @@ public enum RefundCalcEnum {
      */
     CALCULATED_TAX_130(new BigDecimal(1300000), "세액공제 1,300,000원"),
 
-    CALCULATED_TAX_71_5(new BigDecimal(715000), "세액공제 715,000원");
+    CALCULATED_TAX_71_5(new BigDecimal(715000), "세액공제 715,000원"),
+
+    /*
+     * 근로소득 세액공제 계산 소수 0.55
+     */
+    CALC_DECIMAL_0_55(new BigDecimal("0.55"), "근로소득 세액공제 계산 소수 0.55"),
+    /*
+     * 근로소득 세액공제 계산 소수 0.3
+     */
+    CALC_DECIMAL_0_3(new BigDecimal("0.3"), "근로소득 세액공제 계산 소수 0.3")
+    ;
 
 
 

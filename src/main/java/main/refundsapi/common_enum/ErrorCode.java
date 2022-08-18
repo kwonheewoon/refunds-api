@@ -14,9 +14,9 @@ public enum ErrorCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
 
     /*
-     * 200 OK: 회원 정보를 찾을 수 없습니다.
+     * 200 OK: 유저 정보를 찾을 수 없습니다.
      */
-    USER_NOT_FOUND(HttpStatus.OK, "회원 정보를 찾을 수 없습니다."),
+    USER_NOT_FOUND(HttpStatus.OK, "유저 정보를 찾을 수 없습니다."),
 
     /*
      * 401 UNAUTHORIZED: 허용되지 않은 Request Method 호출

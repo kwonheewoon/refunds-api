@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -40,7 +38,6 @@ public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
-
     @Mock
     private UserQueryRepository userQueryRepository;
 
@@ -48,7 +45,7 @@ public class UserServiceTest {
     private UserJoinAccessRepository userJoinAccessRepository;
 
     @Nested
-    @DisplayName("회원 저장 로직")
+    @DisplayName("유저 저장 로직")
     class userSave{
 
         private UserDto userDto;
@@ -79,7 +76,7 @@ public class UserServiceTest {
         }
 
         @Test
-        void 회원_저장(){
+        void 유저_저장(){
 
             given(userRepository.save(any(UserEntity.class))).willReturn(returnUserEntity);
 
@@ -94,34 +91,27 @@ public class UserServiceTest {
         }
 
         @Test
-        void 회원_가능_조회(){
+        void 유저_가능자_여부_중복가입_여부_필터링(){
 
             given(userJoinAccessRepository.findByNameAndRegNo(anyString(), anyString())).willReturn(Optional.of(userJoinAccessEntity));
-
-            var resultEntity = userJoinAccessRepository.findByNameAndRegNo("홍길동", SeedUtil.encrypt("860824-1655068")).orElseThrow();
-
-            assertNotNull(resultEntity);
-            Assertions.assertThat(resultEntity.getRegNo()).isEqualTo("860824-1655068");
-
-            verify(userJoinAccessRepository).findByNameAndRegNo("홍길동", SeedUtil.encrypt("860824-1655068"));
-        }
-
-        @Test
-        void 회원_중복조회(){
-
             given(userRepository.findByUserIdAndName(anyString(), anyString())).willReturn(Optional.ofNullable(returnUserEntity));
 
-            var findUserEntity = userRepository.findByUserIdAndName("hong12", "홍길동").orElseThrow();
+            var resultEntity = userJoinAccessRepository.findByNameAndRegNo("홍길동", SeedUtil.encrypt("860824-1655068"));
 
-            assertNotNull(findUserEntity);
 
+            //유저가입 가능자 여부 && 중복유저 가입 여부 필터링
+            Assertions.assertThat(resultEntity.isPresent() && duplicationUser(userDto)).isFalse();
+
+            assertNotNull(resultEntity);
+
+            verify(userJoinAccessRepository).findByNameAndRegNo("홍길동", SeedUtil.encrypt("860824-1655068"));
             verify(userRepository).findByUserIdAndName("hong12", "홍길동");
         }
 
     }
 
     @Nested
-    @DisplayName("회원 로그인 로직")
+    @DisplayName("유저 로그인 로직")
     class userLogin{
 
         private UserDto userDto;
@@ -142,14 +132,16 @@ public class UserServiceTest {
         }
 
         @Test
-        void 회원_로그인(){
+        void 유저_로그인(){
 
             given(userRepository.findByUserId(anyString())).willReturn(Optional.of(returnUserEntity));
 
             var resultEntity = userRepository.findByUserId("hong12").orElseThrow();
+            var resultUserEntity = createUser(resultEntity);
 
             assertNotNull(resultEntity);
-
+            assertNotNull(resultUserEntity);
+            Assertions.assertThat(resultUserEntity.getUsername()).isEqualTo("hong12");
             verify(userRepository).findByUserId("hong12");
         }
     }
@@ -158,7 +150,7 @@ public class UserServiceTest {
         return new BCryptPasswordEncoder();
     }
 
-    private User createUser(String username, UserEntity userEntity) {
+    private User createUser(UserEntity userEntity) {
         if (null == userEntity) {
             throw new CommonException(ErrorCode.USER_NOT_FOUND);
         }
@@ -166,5 +158,18 @@ public class UserServiceTest {
         return new User(userEntity.getUserId(),
                 userEntity.getPassword(),
                 Arrays.asList());
+    }
+
+    /**
+     * 유저 중복 체크를 위한 유저 정보 조회
+     * */
+    public boolean duplicationUser(UserDto userDto){
+        var findUserEntity = userRepository.findByUserIdAndName(userDto.getUserId(), userDto.getName());
+
+        if(findUserEntity.isPresent()){
+            return false;
+        }
+
+        return true;
     }
 }

@@ -38,21 +38,21 @@ public class UserRefundService {
     private final UserTaxResultQueryRepository userTaxResultQueryRepository;
 
     /**
-     * 회원 세무정보에 대한 환급액 계산결과 저장
+     * 유저 세무정보에 대한 환급액 계산결과 저장
      * */
     @Transactional
     public JSONObject refund() throws ParseException {
 
-        //회원 환급액 계산 결과에 대해 저장, 수정을 위한 dto 생성
+        //유저 환급액 계산 결과에 대해 저장, 수정을 위한 dto 생성
         UserTaxResultDto userTaxResultDto = UserTaxResultDto.builder().year(CommonUtil.getYear()).build();
 
-        //회원 조회
+        //유저 조회
         var findUserEntity = SecurityUtil.getCurrentUserId()
                 .flatMap(userRepository::findByUserId)
                 .orElseThrow(() -> new CommonException(ErrorCode.USER_NOT_FOUND)
                 );
 
-        //회원 세무정보 조회
+        //유저 세무정보 조회
         var findUserTaxInfoEntity = userTaxInfoRepository.findByUserEntityAndYear(findUserEntity, CommonUtil.getYear()).orElseThrow(() -> new CommonException(ErrorCode.USER_TAX_INFO_NOT_FOUND));
 
         //한도액 계산
@@ -120,7 +120,7 @@ public class UserRefundService {
             //적은경우 66만원
             BigDecimal refundAmount = RefundCalcEnum.TOTAL_PAYMENT_DEDUCTION_74.getAmount().subtract(
                     totalPayment.subtract(RefundCalcEnum.TOTAL_PAYMENT_3300.getAmount())
-                            .multiply(new BigDecimal("0.008"))
+                            .multiply(RefundCalcEnum.CALC_DECIMAL_0_008.getAmount())
             );
 
             return Optional.of(refundAmount.compareTo(new BigDecimal(660000)) == -1 ?
@@ -131,7 +131,7 @@ public class UserRefundService {
         else if(totalPayment.compareTo(RefundCalcEnum.TOTAL_PAYMENT_7000.getAmount())  == 1){
             BigDecimal refundAmount = RefundCalcEnum.TOTAL_PAYMENT_DEDUCTION_66.getAmount().subtract(
                     totalPayment.subtract(RefundCalcEnum.TOTAL_PAYMENT_7000.getAmount())
-                            .multiply(new BigDecimal("0.5"))
+                            .multiply(RefundCalcEnum.CALC_DECIMAL_0_5.getAmount())
             );
 
             return Optional.of(refundAmount.compareTo(RefundCalcEnum.TOTAL_PAYMENT_DEDUCTION_50.getAmount()) == -1 ?
@@ -149,14 +149,14 @@ public class UserRefundService {
 
         //산출세액이 1,300,000만원 보다 작을경우
         if (totalAmountUsed.compareTo(RefundCalcEnum.CALCULATED_TAX_130.getAmount()) == -1) {
-            return Optional.of(totalAmountUsed.multiply(new BigDecimal("0.55")));
+            return Optional.of(totalAmountUsed.multiply(RefundCalcEnum.CALC_DECIMAL_0_55.getAmount()));
         }
 
         //산출세액이 1,300,000만원 초과일 경우
         else if (totalAmountUsed.compareTo(RefundCalcEnum.CALCULATED_TAX_130.getAmount()) == 1) {
             return Optional.of(RefundCalcEnum.CALCULATED_TAX_71_5.getAmount().add(totalAmountUsed.subtract(
                     RefundCalcEnum.CALCULATED_TAX_130.getAmount()
-            ).multiply(new BigDecimal("0.3"))));
+            ).multiply(RefundCalcEnum.CALC_DECIMAL_0_3.getAmount())));
         }
         return Optional.empty();
     }
@@ -175,7 +175,7 @@ public class UserRefundService {
     }
 
     /**
-     * 회원 세무정보에 대한 환급 계산 결과 JSONObject 세팅
+     * 유저 세무정보에 대한 환급 계산 결과 JSONObject 세팅
      * */
     public JSONObject setRefundJson(UserTaxResultApiDto userTaxResultApiDto){
         JSONObject result = new JSONObject();
