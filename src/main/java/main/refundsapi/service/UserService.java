@@ -110,9 +110,9 @@ public class UserService<T> {
      * 유저 아이디를 기준으로 유저 정보 조회
      * */
     @Transactional
-    public UserApiDto findByUserId(UserDto userDto){
+    public UserApiDto findByUserId(String userId){
         return UserApiDto.UserApiDtoConvert(
-                userRepository.findByUserId(userDto.getUserId()).orElseThrow(() -> new CommonException(ErrorCode.USER_NOT_FOUND))
+                userRepository.findByUserId(userId).orElseThrow(() -> new CommonException(ErrorCode.USER_NOT_FOUND))
         );
     }
 
@@ -121,7 +121,7 @@ public class UserService<T> {
     * */
     @Transactional
     public boolean duplicationUser(UserDto userDto){
-        var findUserEntity = userRepository.findByUserIdAndName(userDto.getUserId(), userDto.getName());
+        var findUserEntity = userRepository.findByUserId(userDto.getUserId());
 
         if(findUserEntity.isPresent()){
             return false;

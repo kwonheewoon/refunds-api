@@ -38,6 +38,10 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().antMatchers("/h2-console/**"
+                , "/swagger-ui.html"
+                , "/swagger-ui/**"
+                , "/webjars/**"
+                , "/v2/api-docs"
                 , "/favicon.ico"
                 , "/error");
     }
@@ -68,6 +72,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/szs/signup").permitAll()
                 .antMatchers("/szs/login").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

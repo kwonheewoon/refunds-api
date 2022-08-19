@@ -15,6 +15,6 @@ public class CommonUtil {
         DecimalFormat formatter = new DecimalFormat("###,###,###");
         int amountVar = amount.intValue();
 
-        return formatter.format(amountVar).toString();
+        return formatter.format(amountVar).toString()+"원";
     }
 }

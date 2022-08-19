@@ -1,9 +1,11 @@
 package main.refundsapi.controller;
 
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import main.refundsapi.common_enum.CommonEnum;
 import main.refundsapi.common_enum.UserEnum;
 import main.refundsapi.common_enum.UserTaxEnum;
+import main.refundsapi.dto.LoginDto;
 import main.refundsapi.dto.TokenDto;
 import main.refundsapi.dto.UserDto;
 import main.refundsapi.jwt.JwtFilter;
@@ -37,19 +39,29 @@ public class UserRestController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
+
+
     @PostMapping("/signup")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "회원가입 성공")
+    })
+    @ApiOperation(value = "유저 가입 API", notes = "<strong>유저 정보</strong>를 입력받아 등록한다.")
     public ResponseEntity<Object> signup(@RequestBody UserDto userDto){
         return new ResponseEntity<>(userService.saveUser(userDto) , HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody UserDto userDto){
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "로그인 및 토큰 발급 성공")
+    })
+    @ApiOperation(value = "로그인 및 토큰 발급 API", notes = "<strong>유저 정보</strong>를 로그인 및 토큰을 발급한다.")
+    public ResponseEntity<Object> login(@RequestBody LoginDto loginDto){
         
         //유저 정보 조회
-        var findUserApiDto = userService.findByUserId(userDto);
+        var findUserApiDto = userService.findByUserId(loginDto.getUserId());
 
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(findUserApiDto.getUserId(), userDto.getPassword());
+                new UsernamePasswordAuthenticationToken(findUserApiDto.getUserId(), loginDto.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
@@ -64,16 +76,28 @@ public class UserRestController {
     }
 
     @GetMapping("/me")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "유저 정보 조회 API")
+    })
+    @ApiOperation(value = "유저 정보 조회 API", notes = "<strong>JWT 토큰</strong>을 Authorization 헤더로 입력받아 유저 정보를 조회한다.")
     public ResponseEntity<Object> me(){
         return new ResponseEntity<>(new SucessResponse(CommonEnum.STATUS_SUCCESS.getName(), UserEnum.USER_FIND_SUCESS, userService.findUser()), HttpStatus.OK);
     }
 
     @PostMapping("/scrap")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "유저 세무정보 scrap API")
+    })
+    @ApiOperation(value = "유저 세무정보 scrap API", notes = "<strong>JWT 토큰</strong>을 Authorization 헤더로 입력받아 유저 세무정보 scrap API를 조회 및 세무정보를 저장한다.")
     public ResponseEntity<Object> scrap() throws ParseException {
         return new ResponseEntity<>(userTaxInfoService.findScrap(), HttpStatus.OK);
     }
 
     @GetMapping("/refund")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "유저 환급액 계산 및 조회 API")
+    })
+    @ApiOperation(value = "유저 환급액 계산 및 조회 API", notes = "<strong>JWT 토큰</strong>을 Authorization 헤더로 입력받아 유저 환급액을 계산및 조회한다.")
     public ResponseEntity<Object> refund() throws ParseException {
 
         return new ResponseEntity<>(new SucessResponse(CommonEnum.STATUS_SUCCESS.getName(), UserTaxEnum.USER_REFUND_CALC_SUCESS, userRefundService.refund()), HttpStatus.OK);

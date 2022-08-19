@@ -15,19 +15,22 @@ import main.refundsapi.repository.UserTaxInfoRepository;
 import main.refundsapi.util.CommonUtil;
 import static org.junit.jupiter.api.Assertions.*;
 import org.assertj.core.api.Assertions;
-import org.json.simple.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
+@RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase
 @Import(QueryDslConfiguration.class)
@@ -45,21 +48,22 @@ public class UserTaxInfoQueryRepositoryTest {
 
     private UserEntity userEntity;
 
-    @BeforeEach
-    void setup(){
+    @Before
+    public void setup(){
         userEntity = userRepository.save(
                 UserEntity.builder()
                         .name("홍길동")
                         .password("123456")
                         .userId("hong12")
                         .regNo("860824-1655068")
-                .build()
+                        .build()
         );
     }
 
     @Test
     public void 유저_세무정보_저장() {
         // given
+
         var userTaxInfoEntity = UserTaxInfoEntity.builder()
                 .userEntity(userEntity)
                 .year(CommonUtil.getYear())
@@ -74,7 +78,7 @@ public class UserTaxInfoQueryRepositoryTest {
         // then
         assertNotNull(savedUserTaxInfoEntity);
         Assertions.assertThat(savedUserTaxInfoEntity.getTotalPayment()).isEqualTo(new BigDecimal(94666.666));
-        Assertions.assertThat(savedUserTaxInfoEntity.getTotalAmountUsed()).isNotEqualTo(new BigDecimal(1333333.333));
+        Assertions.assertThat(savedUserTaxInfoEntity.getTotalAmountUsed()).isEqualTo(new BigDecimal(1333333.333));
     }
 
     @Test
@@ -89,11 +93,11 @@ public class UserTaxInfoQueryRepositoryTest {
                 .build();
 
         // when
-        var savedUserTaxInfoEntity = userTaxInfoRepository.save(userTaxInfoEntity);
+        var savedUserTaxInfoId = userTaxInfoRepository.save(userTaxInfoEntity).getId();
 
-        updateUserTaxInfo(
+        var ffff = updateUserTaxInfo(
                 UserTaxInfoDto.builder()
-                        .id(savedUserTaxInfoEntity.getId())
+                        .id(savedUserTaxInfoId)
                         .year(CommonUtil.getYear())
                         .totalPayment(new BigDecimal(93333))
                         .totalAmountUsed(new BigDecimal(1334443.333))
@@ -103,9 +107,9 @@ public class UserTaxInfoQueryRepositoryTest {
         var findUserTaxInfoEntity = userTaxInfoRepository.findByUserEntityAndYear(userEntity, CommonUtil.getYear()).orElseThrow();
 
         // then
-        assertNotNull(savedUserTaxInfoEntity);
+        assertNotNull(savedUserTaxInfoId);
         Assertions.assertThat(findUserTaxInfoEntity.getTotalPayment()).isEqualTo(new BigDecimal(93333));
-        Assertions.assertThat(findUserTaxInfoEntity.getTotalAmountUsed()).isNotEqualTo(new BigDecimal(1334443.333));
+        Assertions.assertThat(findUserTaxInfoEntity.getTotalAmountUsed()).isEqualTo(new BigDecimal(1334443.333));
     }
 
 
@@ -126,7 +130,7 @@ public class UserTaxInfoQueryRepositoryTest {
             updateBuilder.set(userTaxInfoEntity.totalAmountUsed, userTaxInfoDto.getTotalAmountUsed());
         }
         //소득구분 수정
-        if (!userTaxInfoDto.getIncomeCls().isEmpty()) {
+        if (null != userTaxInfoDto.getIncomeCls() && !userTaxInfoDto.getIncomeCls().isEmpty()) {
             updateBuilder.set(userTaxInfoEntity.incomeCls, userTaxInfoDto.getIncomeCls());
         }
 
