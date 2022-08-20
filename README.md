@@ -26,6 +26,7 @@ Service, Repository 단위테스트 \
 
 ## API 사용 가이드
 ### Swagger Ui : localhost:8080/swagger-ui/#/user-rest-controller
+Swagger Authorization 값 세팅방법 :  Bearer {JWT 토큰값}
 
 ### API Status Code
     /*

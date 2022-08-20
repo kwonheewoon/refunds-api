@@ -34,7 +34,7 @@ public class SwaggerConfig {
     }
 
     private ApiKey apiKey() {
-        return new ApiKey("Authorization", "Authorization", "header");
+        return new ApiKey("Authorization", "Bearer", "header");
     }
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
@@ -64,7 +64,7 @@ public class SwaggerConfig {
 
         authorizationScopes[0] = authorizationScope;
         return Arrays.asList(
-                new SecurityReference("JWT", authorizationScopes));
+                new SecurityReference("Authorization", authorizationScopes));
     }
 
 

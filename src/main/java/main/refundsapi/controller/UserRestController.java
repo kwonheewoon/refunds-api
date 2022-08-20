@@ -79,7 +79,6 @@ public class UserRestController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "유저 정보 조회 API")
     })
-    @ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")})
     @ApiOperation(value = "유저 정보 조회 API", notes = "<strong>JWT 토큰</strong>을 Authorization 헤더로 입력받아 유저 정보를 조회한다.")
     public ResponseEntity<Object> me(){
         return new ResponseEntity<>(new SucessResponse(CommonEnum.STATUS_SUCCESS.getName(), UserEnum.USER_FIND_SUCESS, userService.findUser()), HttpStatus.OK);
