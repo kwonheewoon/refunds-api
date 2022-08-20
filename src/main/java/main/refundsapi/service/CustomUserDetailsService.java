@@ -5,7 +5,6 @@ import main.refundsapi.common_enum.ErrorCode;
 import main.refundsapi.entity.UserEntity;
 import main.refundsapi.exception.CommonException;
 import main.refundsapi.repository.UserRepository;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

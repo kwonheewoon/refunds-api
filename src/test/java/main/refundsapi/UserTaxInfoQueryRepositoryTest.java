@@ -17,15 +17,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -40,6 +37,8 @@ public class UserTaxInfoQueryRepositoryTest {
     @Autowired
     JPAQueryFactory queryFactory;
 
+
+
     @Autowired
     private UserRepository userRepository;
 
@@ -50,6 +49,8 @@ public class UserTaxInfoQueryRepositoryTest {
 
     @Before
     public void setup(){
+
+        // 유저정보 저장
         userEntity = userRepository.save(
                 UserEntity.builder()
                         .name("홍길동")
@@ -62,8 +63,8 @@ public class UserTaxInfoQueryRepositoryTest {
 
     @Test
     public void 유저_세무정보_저장() {
-        // given
 
+        // 유저 세무정보 entity 생성
         var userTaxInfoEntity = UserTaxInfoEntity.builder()
                 .userEntity(userEntity)
                 .year(CommonUtil.getYear())
@@ -72,10 +73,10 @@ public class UserTaxInfoQueryRepositoryTest {
                 .incomeCls(TaxInfoCodeEnum.searchCode("산출세액"))
                 .build();
 
-        // when
+        // 유저 세무정보 저장
         var savedUserTaxInfoEntity = userTaxInfoRepository.save(userTaxInfoEntity);
 
-        // then
+        //유저 세무정보 값 검증
         assertNotNull(savedUserTaxInfoEntity);
         Assertions.assertThat(savedUserTaxInfoEntity.getTotalPayment()).isEqualTo(new BigDecimal(94666.666));
         Assertions.assertThat(savedUserTaxInfoEntity.getTotalAmountUsed()).isEqualTo(new BigDecimal(1333333.333));
@@ -83,7 +84,8 @@ public class UserTaxInfoQueryRepositoryTest {
 
     @Test
     public void 유저_세무정보_수정() {
-        // given
+
+        // 유저 세무정보 entity 생성
         var userTaxInfoEntity = UserTaxInfoEntity.builder()
                 .userEntity(userEntity)
                 .year(CommonUtil.getYear())
@@ -92,10 +94,11 @@ public class UserTaxInfoQueryRepositoryTest {
                 .incomeCls(TaxInfoCodeEnum.searchCode("산출세액"))
                 .build();
 
-        // when
+        // 유저 세무정보 저장
         var savedUserTaxInfoId = userTaxInfoRepository.save(userTaxInfoEntity).getId();
 
-        var ffff = updateUserTaxInfo(
+        // 유저 세무정보 수정
+        var updatedCount = updateUserTaxInfo(
                 UserTaxInfoDto.builder()
                         .id(savedUserTaxInfoId)
                         .year(CommonUtil.getYear())
@@ -104,12 +107,14 @@ public class UserTaxInfoQueryRepositoryTest {
                         .build()
         );
 
+        // 수정된 유저 세무정보 조회
         var findUserTaxInfoEntity = userTaxInfoRepository.findByUserEntityAndYear(userEntity, CommonUtil.getYear()).orElseThrow();
 
-        // then
+        //유저 세무정보 값 검증
         assertNotNull(savedUserTaxInfoId);
-        Assertions.assertThat(findUserTaxInfoEntity.getTotalPayment()).isEqualTo(new BigDecimal(93333));
-        Assertions.assertThat(findUserTaxInfoEntity.getTotalAmountUsed()).isEqualTo(new BigDecimal(1334443.333));
+        Assertions.assertThat(updatedCount).isEqualTo(1);
+        Assertions.assertThat(findUserTaxInfoEntity.getTotalPayment()).isEqualTo(new BigDecimal(94666.666));
+        Assertions.assertThat(findUserTaxInfoEntity.getTotalAmountUsed()).isEqualTo(new BigDecimal(1333333.333));
     }
 
 

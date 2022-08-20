@@ -12,17 +12,15 @@ import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
 import java.util.List;
 
-@EnableSwagger2
 @Configuration
 public class SwaggerConfig {
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.OAS_30)
                 .select()
                 .apis(RequestHandlerSelectors.any()) // 특정 패키지경로를 API문서화 한다. 1차 필터
                 .paths(PathSelectors.any()) // apis중에서 특정 path조건 API만 문서화 하는 2차 필터
@@ -40,8 +38,8 @@ public class SwaggerConfig {
     }
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Category API")
-                .description("Category API 호출 용도.")
+                .title("환급액 계산 API")
+                .description("유저의 환급액 계산을 위한 API")
                 .version("1.0.0")
                 .termsOfServiceUrl("")
 //                .contact()

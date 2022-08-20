@@ -1,10 +1,12 @@
 package main.refundsapi.entity;
 
 import lombok.Getter;
+import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
@@ -15,8 +17,10 @@ import java.time.LocalDateTime;
 public class BaseEntity {
 
     @CreatedDate
+    @Comment("등록 일자")
     private LocalDateTime createDate;
 
     @LastModifiedDate
+    @Comment("마지막 수정 일자")
     private LocalDateTime lastModifiedDate;
 }

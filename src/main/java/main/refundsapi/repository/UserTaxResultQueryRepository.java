@@ -5,11 +5,9 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import lombok.RequiredArgsConstructor;
-import main.refundsapi.dto.UserTaxInfoDto;
 import main.refundsapi.dto.UserTaxResultApiDto;
 import main.refundsapi.dto.UserTaxResultDto;
 import main.refundsapi.entity.QUserEntity;
-import main.refundsapi.entity.QUserTaxInfoEntity;
 import main.refundsapi.entity.QUserTaxResultEntity;
 import org.springframework.stereotype.Repository;
 

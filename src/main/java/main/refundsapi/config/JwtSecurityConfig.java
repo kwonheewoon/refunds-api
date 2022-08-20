@@ -1,6 +1,5 @@
 package main.refundsapi.config;
 
-import lombok.RequiredArgsConstructor;
 import main.refundsapi.jwt.JwtFilter;
 import main.refundsapi.jwt.TokenProvider;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;

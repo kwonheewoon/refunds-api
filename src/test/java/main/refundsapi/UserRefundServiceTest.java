@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -101,7 +102,7 @@ public class UserRefundServiceTest {
 
         //given
         // 총사용금액
-        BigDecimal totalAmountUsed = new BigDecimal(2000000);
+        BigDecimal totalAmountUsed = new BigDecimal(1333333.55555).setScale(0, RoundingMode.DOWN);
         //산출세액 코드
         String incomeCls = "CALT";
 
@@ -121,13 +122,13 @@ public class UserRefundServiceTest {
 
         log.info("공제액 : {}", deductible);
 
-        Assertions.assertThat(deductible.intValue()).isEqualTo(new BigDecimal(925000).intValue());
+        Assertions.assertThat(deductible.intValue()).isEqualTo(new BigDecimal(724999).intValue());
     }
 
     @Test
     void 환급액_계산식(){
 
-        BigDecimal deductible = new BigDecimal("925000.1");
+        BigDecimal deductible = new BigDecimal("915000.1");
         BigDecimal limitAmount = new BigDecimal("925000.5");
 
 

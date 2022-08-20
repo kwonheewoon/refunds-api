@@ -18,10 +18,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -146,6 +145,9 @@ public class UserRefundService {
      * 공제액 계산
      * */
     public Optional<BigDecimal> deductibleCalc(BigDecimal totalAmountUsed, String incomeCls){
+
+        //소수점 버림
+        totalAmountUsed = totalAmountUsed.setScale(0, RoundingMode.DOWN);
 
         //산출세액이 1,300,000만원 보다 작을경우
         if (totalAmountUsed.compareTo(RefundCalcEnum.CALCULATED_TAX_130.getAmount()) == -1) {

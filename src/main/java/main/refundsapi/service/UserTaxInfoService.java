@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import main.refundsapi.common_enum.CommonEnum;
 import main.refundsapi.common_enum.ErrorCode;
 import main.refundsapi.common_enum.TaxInfoCodeEnum;
-import main.refundsapi.dto.UserDto;
 import main.refundsapi.dto.UserTaxInfoDto;
 import main.refundsapi.entity.UserEntity;
 import main.refundsapi.entity.UserTaxInfoEntity;
@@ -17,17 +16,12 @@ import main.refundsapi.util.CommonUtil;
 import main.refundsapi.util.SecurityUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor

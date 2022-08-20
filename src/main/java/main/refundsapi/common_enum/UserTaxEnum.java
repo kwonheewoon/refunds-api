@@ -23,10 +23,13 @@ public enum UserTaxEnum {
     REFUND_AMOUNT_CALC_FAIL("-1", "환급액 계산 오류가 발생하였습니다."),
 
     /*
-     * 400020 : 로그인 정보가 잘못 되었습니다.
+     * 200040 : 유저의 세무정보 스크랩이 완료되었습니다.
      */
     USER_FIND_SCRAP_SUCESS("200040", "유저의 세무정보 스크랩이 완료되었습니다."),
 
+    /*
+     * 200050 : 환급액 계산이 완료되었습니다.
+     */
     USER_REFUND_CALC_SUCESS("200050", "환급액 계산이 완료되었습니다.");
 
     private final String code;
