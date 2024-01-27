@@ -1,0 +1,1 @@
+package main.refundsapi.refund.domain;import com.fasterxml.jackson.annotation.JsonProperty;import java.math.BigDecimal;public record RefundApiDto(        @JsonProperty("이름") String name,        @JsonProperty("결정세액") String dta,        @JsonProperty("퇴직연금세액공제") String rptda) {}

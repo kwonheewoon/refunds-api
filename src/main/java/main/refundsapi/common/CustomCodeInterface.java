@@ -1,0 +1,1 @@
+package main.refundsapi.common;import org.springframework.http.HttpStatus;public interface CustomCodeInterface {    String getCode();    String getMessage();    HttpStatus getHttpStatus();}

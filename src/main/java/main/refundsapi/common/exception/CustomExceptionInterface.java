@@ -1,0 +1,1 @@
+package main.refundsapi.common.exception;import org.springframework.http.HttpStatus;public interface CustomExceptionInterface {    String getCode();    HttpStatus getHttpStatus();    String getMessage();}

@@ -1,0 +1,52 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:refundsDB;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+# swagger
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+  api-docs:
+    path: /swagger-ui/api-docs
+
+jwt:
+  header: Authorization
+  #kwonheewoon user api project
+  secret: a3dvbmhlZXdvb24gdXNlciBhcGkgcHJvamVjdCBzcmMubWFpbi5qYXZhLm1haW4ucmVmdW5kc2FwaSBwYWNrYWdl
+  token-validity-in-seconds: 86400000
+
+seed-util:
+  user-key: testCrypt2020!@#
+  iv: 1234567890123456
+
+scrap:
+  host: https://codetest.3o3.co.kr
